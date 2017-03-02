@@ -12,7 +12,17 @@ $this->params['breadcrumbs'][] = $this->title;
 $url = Url::to(['peliculas/peliculas']);
 $urlActual = Url::to('');
 $js = <<<EOT
-    $('#buscarform-titulo').keyup(function() {
+
+var delay = (function() {
+    var timer = 0;
+    return function(callback, ms){
+        clearTimeout (timer);
+        timer = setTimeout(callback, ms);
+    };
+})();
+
+$('#buscarform-titulo').keyup(function() {
+    delay(function() {
         var q = $('#buscarform-titulo').val();
         if (q == '') {
             $('#peliculas').html('');
@@ -26,10 +36,10 @@ $js = <<<EOT
             },
             success: function (data, status, event) {
                 $('#peliculas').html(data);
-
             }
         });
-    });
+    }, 500);
+});
 EOT;
 $this->registerJs($js);
 ?>
